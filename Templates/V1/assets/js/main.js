@@ -117,39 +117,121 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // =====================================================
-    // Contact Form Handling
+    // Inquiry System (mailto)
     // =====================================================
-    const contactForm = document.getElementById('contact-form');
+    const inquiryButtons = document.querySelectorAll('.btn-inquiry');
+    const unitBadge = document.getElementById('unit-badge');
+    const unitClear = document.getElementById('unit-clear');
+    const unitHint = document.getElementById('inquiry-unit-hint');
+    const interestOptions = document.querySelectorAll('input[name="interest"]');
+    const sendInquiryBtn = document.getElementById('send-inquiry');
 
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+    // Store selected unit data
+    let selectedUnit = null;
+    let selectedInterest = null;
 
-            // Get form data
-            const formData = new FormData(this);
-            const data = {};
-            formData.forEach(function(value, key) {
-                data[key] = value;
-            });
+    // Handle unit selection from table
+    inquiryButtons.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            // Store unit data
+            selectedUnit = {
+                unit: this.dataset.unit,
+                floor: this.dataset.floor,
+                type: this.dataset.type,
+                rooms: this.dataset.rooms,
+                size: this.dataset.size
+            };
 
-            // Here you would typically send the data to a server
-            // For now, we'll just show a success message
-            console.log('Form submitted:', data);
+            // Update UI
+            updateUnitDisplay();
+            updateSendButton();
+        });
+    });
 
-            // Show success message
-            const btn = this.querySelector('button[type="submit"]');
-            const originalText = btn.textContent;
-            btn.textContent = 'Anfrage gesendet!';
-            btn.disabled = true;
-            btn.style.backgroundColor = '#2a7a68';
+    // Update unit display in contact section
+    function updateUnitDisplay() {
+        if (selectedUnit) {
+            unitBadge.innerHTML = '<strong>WE ' + selectedUnit.unit + '</strong> | ' +
+                selectedUnit.type + ' | ' +
+                selectedUnit.rooms + ' Zimmer | ' +
+                selectedUnit.size;
+            unitBadge.classList.add('unit-selected');
+            unitBadge.classList.remove('unit-badge-link');
+            unitBadge.removeAttribute('href');
+            unitClear.style.display = 'inline-flex';
+            unitHint.style.display = 'none';
+        } else {
+            unitBadge.innerHTML = '<i class="fas fa-hand-pointer"></i> Einheit auswählen';
+            unitBadge.classList.remove('unit-selected');
+            unitBadge.classList.add('unit-badge-link');
+            unitBadge.setAttribute('href', '#einheiten');
+            unitClear.style.display = 'none';
+            unitHint.style.display = 'block';
+        }
+    }
 
-            // Reset after 3 seconds
-            setTimeout(function() {
-                btn.textContent = originalText;
-                btn.disabled = false;
-                btn.style.backgroundColor = '';
-                contactForm.reset();
-            }, 3000);
+    // Clear unit selection
+    if (unitClear) {
+        unitClear.addEventListener('click', function() {
+            selectedUnit = null;
+            updateUnitDisplay();
+            updateSendButton();
+        });
+    }
+
+    // Handle interest selection
+    interestOptions.forEach(function(option) {
+        option.addEventListener('change', function() {
+            selectedInterest = this.value;
+            updateSendButton();
+        });
+    });
+
+    // Update send button state
+    function updateSendButton() {
+        if (sendInquiryBtn) {
+            sendInquiryBtn.disabled = !selectedInterest;
+        }
+    }
+
+    // Handle send inquiry button
+    if (sendInquiryBtn) {
+        sendInquiryBtn.addEventListener('click', function() {
+            if (!selectedInterest) return;
+
+            // Build email subject and body
+            const email = 'katie.rejhon@kensington-international.com';
+            let subject = '';
+            let body = '';
+
+            if (selectedUnit) {
+                subject = 'Anfrage: ' + selectedInterest + ' - La Geoda WE ' + selectedUnit.unit;
+                body = 'Guten Tag Frau Rejhon,\n\n' +
+                    'ich interessiere mich für folgende Wohneinheit im Projekt La Geoda:\n\n' +
+                    'Wohneinheit: ' + selectedUnit.unit + '\n' +
+                    'Typ: ' + selectedUnit.type + '\n' +
+                    'Etage: ' + selectedUnit.floor + '\n' +
+                    'Zimmer: ' + selectedUnit.rooms + '\n' +
+                    'Größe: ' + selectedUnit.size + '\n\n' +
+                    'Mein Anliegen: ' + selectedInterest + '\n\n' +
+                    'Bitte kontaktieren Sie mich für weitere Informationen.\n\n' +
+                    'Mit freundlichen Grüßen';
+            } else {
+                subject = 'Anfrage: ' + selectedInterest + ' - La Geoda Palma';
+                body = 'Guten Tag Frau Rejhon,\n\n' +
+                    'ich interessiere mich für das Projekt La Geoda in Palma.\n\n' +
+                    'Mein Anliegen: ' + selectedInterest + '\n\n' +
+                    'Bitte kontaktieren Sie mich für weitere Informationen.\n\n' +
+                    'Mit freundlichen Grüßen';
+            }
+
+            // Create mailto link
+            const mailtoLink = 'mailto:' + email +
+                '?subject=' + encodeURIComponent(subject) +
+                '&body=' + encodeURIComponent(body);
+
+            // Open email client
+            window.location.href = mailtoLink;
         });
     }
 
