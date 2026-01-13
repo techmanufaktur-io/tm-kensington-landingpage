@@ -700,7 +700,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-scroll {
     position: absolute;
-    bottom: var(--space-xl);
+    bottom: var(--space-3xl);
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
