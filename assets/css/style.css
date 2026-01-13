@@ -696,11 +696,12 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
     flex-wrap: wrap;
     gap: var(--space-md);
+    margin-bottom: var(--space-4xl);
 }
 
 .hero-scroll {
     position: absolute;
-    bottom: var(--space-3xl);
+    bottom: var(--space-lg);
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
