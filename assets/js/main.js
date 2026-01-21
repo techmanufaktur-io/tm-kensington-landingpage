@@ -1,7 +1,7 @@
 /**
- * La Geoda - KENSINGTON Finest Properties
+ * Es Jardí - KENSINGTON Mallorca Southwest Central
  * Landing Page JavaScript
- * Version 1.0
+ * Version 2.0
  */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (selectedUnit) {
             unitBadge.innerHTML = '<strong>WE ' + selectedUnit.unit + '</strong> | ' +
                 selectedUnit.type + ' | ' +
-                selectedUnit.rooms + ' Zimmer | ' +
+                selectedUnit.rooms + ' Schlafzimmer | ' +
                 selectedUnit.size;
             unitBadge.classList.add('unit-selected');
             unitBadge.classList.remove('unit-badge-link');
@@ -216,21 +216,21 @@ document.addEventListener('DOMContentLoaded', function() {
             let body = '';
 
             if (selectedUnit) {
-                subject = 'Anfrage: ' + selectedInterest + ' - La Geoda WE ' + selectedUnit.unit;
-                body = 'Guten Tag Frau Rejhon,\n\n' +
-                    'ich interessiere mich für folgende Wohneinheit im Projekt La Geoda:\n\n' +
+                subject = 'Anfrage: ' + selectedInterest + ' - Es Jardí WE ' + selectedUnit.unit;
+                body = 'Guten Tag,\n\n' +
+                    'ich interessiere mich für folgende Wohneinheit im Projekt Es Jardí:\n\n' +
                     'Wohneinheit: ' + selectedUnit.unit + '\n' +
                     'Typ: ' + selectedUnit.type + '\n' +
                     'Etage: ' + selectedUnit.floor + '\n' +
-                    'Zimmer: ' + selectedUnit.rooms + '\n' +
+                    'Schlafzimmer: ' + selectedUnit.rooms + '\n' +
                     'Größe: ' + selectedUnit.size + '\n\n' +
                     'Mein Anliegen: ' + selectedInterest + '\n\n' +
                     'Bitte kontaktieren Sie mich für weitere Informationen.\n\n' +
                     'Mit freundlichen Grüßen';
             } else {
-                subject = 'Anfrage: ' + selectedInterest + ' - La Geoda Palma';
-                body = 'Guten Tag Frau Rejhon,\n\n' +
-                    'ich interessiere mich für das Projekt La Geoda in Palma.\n\n' +
+                subject = 'Anfrage: ' + selectedInterest + ' - Es Jardí Palma';
+                body = 'Guten Tag,\n\n' +
+                    'ich interessiere mich für das Projekt Es Jardí in Palma.\n\n' +
                     'Mein Anliegen: ' + selectedInterest + '\n\n' +
                     'Bitte kontaktieren Sie mich für weitere Informationen.\n\n' +
                     'Mit freundlichen Grüßen';
@@ -247,91 +247,159 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // =====================================================
-    // Gallery Lightbox (Simple Implementation)
+    // Gallery Lightbox Carousel
     // =====================================================
     const galleryItems = document.querySelectorAll('.gallery-item');
+    const galleryImages = Array.from(galleryItems).map(item => {
+        const img = item.querySelector('img');
+        return img ? { src: img.src, alt: img.alt } : null;
+    }).filter(Boolean);
 
-    galleryItems.forEach(function(item) {
+    let currentImageIndex = 0;
+    let lightboxElement = null;
+
+    function openLightbox(index) {
+        currentImageIndex = index;
+
+        // Create lightbox
+        lightboxElement = document.createElement('div');
+        lightboxElement.className = 'lightbox';
+        lightboxElement.innerHTML = `
+            <div class="lightbox-content">
+                <button class="lightbox-prev"><i class="fas fa-chevron-left"></i></button>
+                <img src="${galleryImages[currentImageIndex].src}" alt="${galleryImages[currentImageIndex].alt}">
+                <button class="lightbox-next"><i class="fas fa-chevron-right"></i></button>
+                <button class="lightbox-close">&times;</button>
+                <div class="lightbox-counter">${currentImageIndex + 1} / ${galleryImages.length}</div>
+            </div>
+        `;
+
+        // Add styles
+        lightboxElement.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        `;
+
+        const lightboxContent = lightboxElement.querySelector('.lightbox-content');
+        lightboxContent.style.cssText = `
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+
+        const lightboxImg = lightboxElement.querySelector('img');
+        lightboxImg.style.cssText = `
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+        `;
+
+        const closeBtn = lightboxElement.querySelector('.lightbox-close');
+        closeBtn.style.cssText = `
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        `;
+
+        const prevBtn = lightboxElement.querySelector('.lightbox-prev');
+        const nextBtn = lightboxElement.querySelector('.lightbox-next');
+        const navBtnStyles = `
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        `;
+        prevBtn.style.cssText = navBtnStyles + 'left: -80px;';
+        nextBtn.style.cssText = navBtnStyles + 'right: -80px;';
+
+        const counter = lightboxElement.querySelector('.lightbox-counter');
+        counter.style.cssText = `
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 0.9rem;
+            font-family: 'Montserrat', sans-serif;
+        `;
+
+        document.body.appendChild(lightboxElement);
+        document.body.classList.add('no-scroll');
+
+        // Event listeners
+        closeBtn.addEventListener('click', closeLightbox);
+        prevBtn.addEventListener('click', function(e) { e.stopPropagation(); showPrevImage(); });
+        nextBtn.addEventListener('click', function(e) { e.stopPropagation(); showNextImage(); });
+        lightboxElement.addEventListener('click', function(e) {
+            if (e.target === lightboxElement) closeLightbox();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', handleKeydown);
+    }
+
+    function updateLightboxImage() {
+        if (!lightboxElement) return;
+        const img = lightboxElement.querySelector('img');
+        const counter = lightboxElement.querySelector('.lightbox-counter');
+        img.src = galleryImages[currentImageIndex].src;
+        img.alt = galleryImages[currentImageIndex].alt;
+        counter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+    }
+
+    function showPrevImage() {
+        currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+        updateLightboxImage();
+    }
+
+    function showNextImage() {
+        currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+        updateLightboxImage();
+    }
+
+    function closeLightbox() {
+        if (lightboxElement) {
+            lightboxElement.remove();
+            lightboxElement = null;
+            document.body.classList.remove('no-scroll');
+            document.removeEventListener('keydown', handleKeydown);
+        }
+    }
+
+    function handleKeydown(e) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') showPrevImage();
+        if (e.key === 'ArrowRight') showNextImage();
+    }
+
+    galleryItems.forEach(function(item, index) {
         item.style.cursor = 'pointer';
-
         item.addEventListener('click', function() {
-            const img = this.querySelector('img');
-            if (img) {
-                // Create lightbox
-                const lightbox = document.createElement('div');
-                lightbox.className = 'lightbox';
-                lightbox.innerHTML = `
-                    <div class="lightbox-content">
-                        <img src="${img.src}" alt="${img.alt}">
-                        <button class="lightbox-close">&times;</button>
-                    </div>
-                `;
-
-                // Add styles
-                lightbox.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.95);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 10000;
-                    cursor: pointer;
-                `;
-
-                const lightboxContent = lightbox.querySelector('.lightbox-content');
-                lightboxContent.style.cssText = `
-                    position: relative;
-                    max-width: 90%;
-                    max-height: 90%;
-                `;
-
-                const lightboxImg = lightbox.querySelector('img');
-                lightboxImg.style.cssText = `
-                    max-width: 100%;
-                    max-height: 90vh;
-                    object-fit: contain;
-                `;
-
-                const closeBtn = lightbox.querySelector('.lightbox-close');
-                closeBtn.style.cssText = `
-                    position: absolute;
-                    top: -40px;
-                    right: 0;
-                    background: none;
-                    border: none;
-                    color: white;
-                    font-size: 2rem;
-                    cursor: pointer;
-                    padding: 0.5rem;
-                `;
-
-                document.body.appendChild(lightbox);
-                document.body.classList.add('no-scroll');
-
-                // Close lightbox
-                function closeLightbox() {
-                    lightbox.remove();
-                    document.body.classList.remove('no-scroll');
-                }
-
-                lightbox.addEventListener('click', closeLightbox);
-                closeBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    closeLightbox();
-                });
-
-                // Close on escape key
-                document.addEventListener('keydown', function escHandler(e) {
-                    if (e.key === 'Escape') {
-                        closeLightbox();
-                        document.removeEventListener('keydown', escHandler);
-                    }
-                });
-            }
+            openLightbox(index);
         });
     });
 

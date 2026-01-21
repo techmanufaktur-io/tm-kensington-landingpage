@@ -1,6 +1,6 @@
 /* =====================================================
-   LA GEODA - KENSINGTON FINEST PROPERTIES
-   Landing Page Styles - V1
+   ES JARDÍ - KENSINGTON MALLORCA SOUTHWEST CENTRAL
+   Landing Page Styles - V2
    ===================================================== */
 
 /* =====================================================
@@ -2006,4 +2006,145 @@ h1, h2, h3, h4, h5, h6 {
 /* Smooth scroll offset for fixed header */
 html {
     scroll-padding-top: 100px;
+}
+
+/* =====================================================
+   Vision Section
+   ===================================================== */
+.section-vision {
+    background-color: var(--bg-cream);
+    padding: var(--space-4xl) 0;
+}
+
+.section-vision .section-title {
+    font-size: 2rem;
+    line-height: 1.4;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.vision-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.vision-text p {
+    margin-bottom: var(--space-md);
+    font-size: 1.0625rem;
+    color: var(--color-gray-700);
+}
+
+.vision-text p.lead {
+    font-size: 1.125rem;
+    color: var(--color-gray-800);
+}
+
+.vision-statement {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.vision-statement p {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-xs);
+    color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+    .section-vision .section-title {
+        font-size: 1.5rem;
+    }
+
+    .vision-text p {
+        font-size: 1rem;
+    }
+
+    .vision-statement p {
+        font-size: 1.125rem;
+    }
+}
+
+/* =====================================================
+   Contact Persons Grid
+   ===================================================== */
+.contact-persons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
+}
+
+.contact-persons .contact-person {
+    display: flex;
+    gap: var(--space-md);
+    align-items: flex-start;
+}
+
+.contact-persons .person-image {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+}
+
+.contact-persons .person-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.contact-persons .person-details h3 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.contact-persons .person-title {
+    font-size: 0.8125rem;
+    color: var(--color-gray-600);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.contact-persons .person-contact a {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-gray-700);
+    text-decoration: none;
+    margin-bottom: 0.25rem;
+    word-break: break-all;
+}
+
+.contact-persons .person-contact a:hover {
+    color: var(--color-primary);
+}
+
+.contact-persons .person-contact i {
+    width: 16px;
+    margin-right: 0.5rem;
+    color: var(--color-primary);
+}
+
+@media (max-width: 992px) {
+    .contact-persons {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .contact-persons .contact-person {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .contact-persons .person-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .contact-persons .person-contact a {
+        justify-content: center;
+    }
 }
